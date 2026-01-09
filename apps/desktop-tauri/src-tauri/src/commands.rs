@@ -660,12 +660,7 @@ pub async fn clear_screen_sources_cache(source: Option<String>) -> Result<serde_
 // Activity Tracking Commands
 // ============================================================================
 
-#[derive(Debug, Serialize)]
-pub struct ActiveWindowInfo {
-    pub title: String,
-    pub owner: String,
-    pub path: Option<String>,
-}
+use crate::active_window;
 
 /// Enable/disable activity tracking
 #[tauri::command]
@@ -677,11 +672,10 @@ pub fn update_activity_tracking(app: tauri::AppHandle, enabled: bool) -> Result<
 }
 
 /// Get the currently active window
+/// Returns information matching the mezon-active-windows package format
 #[tauri::command]
-pub async fn get_active_window() -> Result<Option<ActiveWindowInfo>, String> {
-    // Platform-specific implementation would go here
-    // Similar to Electron's mezon-active-windows package
-    Ok(None)
+pub async fn get_active_window() -> Result<Option<active_window::ActiveWindowInfo>, String> {
+    Ok(active_window::get_active_window())
 }
 
 // Helper for base64 encoding

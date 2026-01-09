@@ -142,6 +142,37 @@ export async function clearTauriScreenSourcesCache(source?: 'screen' | 'window')
 	return result || { success: false };
 }
 
+// ============================================================================
+// Active Window Detection APIs (matching Electron's mezon-active-windows)
+// ============================================================================
+
+export interface ActiveWindowInfo {
+	/** The window class or application name (e.g., "Code", "Spotify", "chrome") */
+	windowClass: string;
+	/** The window title */
+	windowName: string;
+	/** The executable path (if available) */
+	path: string | null;
+	/** Process ID */
+	pid: number | null;
+}
+
+/**
+ * Get the currently active/focused window
+ * Matches the mezon-active-windows package format used in Electron
+ */
+export async function getTauriActiveWindow(): Promise<ActiveWindowInfo | null> {
+	const result = await invokeTauri<ActiveWindowInfo | null>('get_active_window');
+	return result;
+}
+
+/**
+ * Enable or disable activity tracking
+ */
+export async function setTauriActivityTracking(enabled: boolean): Promise<void> {
+	await invokeTauri('update_activity_tracking', { enabled });
+}
+
 // TypeScript declarations for Tauri globals
 declare global {
 	interface Window {

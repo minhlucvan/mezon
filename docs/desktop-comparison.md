@@ -148,7 +148,7 @@ Binary: 15MB (release, stripped, LTO optimized)
 | Auto-updater | ✅ | ✅ | Different implementations |
 | Download progress | ✅ | ✅ | Full parity |
 | **Activity Tracking** | | | |
-| Active window detection | ✅ | ❌ | Uses mezon-active-windows |
+| Active window detection | ✅ | ✅ | Full parity (platform-specific impl) |
 | User interaction tracking | ✅ | ⚠️ | Placeholder impl |
 | **Platform-Specific** | | | |
 | macOS private API | ✅ | ✅ | Full parity |
@@ -169,7 +169,6 @@ Binary: 15MB (release, stripped, LTO optimized)
 
 | Feature | Impact | Workaround |
 |---------|--------|------------|
-| **Active window detection** | Medium | Need Rust crate or native implementation |
 | **Native image clipboard** | Low | Base64 encode and handle in frontend |
 
 ### Recently Implemented
@@ -177,21 +176,20 @@ Binary: 15MB (release, stripped, LTO optimized)
 | Feature | Status |
 |---------|--------|
 | **Screen capture (desktopCapturer)** | ✅ Implemented via platform-specific Rust code |
+| **Active window detection** | ✅ Implemented via platform-specific Rust code |
 
-The screen capture implementation provides:
+**Screen capture implementation provides:**
 - Windows: GDI/Win32 APIs (BitBlt, GetDIBits)
 - macOS: Core Graphics (CGWindowListCopyWindowInfo)
 - Linux: X11rb for X11 window enumeration
 - Thumbnail generation with proper sizing (272x136 screens, 150x90 windows)
 - Caching and pagination matching Electron API
 
-### Implementation Notes
-
-**Active Window Detection:**
-Electron uses `mezon-active-windows` native module. Tauri needs:
-- Windows: `windows` crate with `GetForegroundWindow()`
-- macOS: `objc` crate with NSWorkspace APIs
-- Linux: X11/Wayland APIs
+**Active window detection provides:**
+- Windows: GetForegroundWindow, GetWindowText, GetModuleBaseName
+- macOS: NSWorkspace frontmostApplication, CGWindowListCopyWindowInfo
+- Linux: X11 _NET_ACTIVE_WINDOW, WM_CLASS, _NET_WM_NAME
+- Returns: windowClass, windowName, path, pid (matching mezon-active-windows)
 
 ---
 
@@ -278,10 +276,9 @@ The Tauri version provides:
 
 | Missing Feature | Priority | Effort to Implement |
 |-----------------|----------|---------------------|
-| Active window tracking | Medium | Medium (Platform APIs) |
 | Native image clipboard | Low | Low (already partially done) |
 
-**Note:** Screen capture is now fully implemented with platform-specific Rust code.
+**Note:** Screen capture and active window detection are now fully implemented with platform-specific Rust code.
 
 ---
 
@@ -338,9 +335,9 @@ Plugins: 16 official plugins
 
 **Recently completed:**
 - ✅ Screen capture source enumeration (full platform support)
+- ✅ Active window detection (full platform support)
 
 **Remaining work** for full feature parity:
-1. Active window detection (medium priority)
-2. Minor clipboard improvements (low priority)
+1. Native image clipboard improvements (low priority)
 
-**Recommendation:** The Tauri desktop app is now feature-complete for core functionality. Consider starting beta testing and planning migration from Electron to Tauri.
+**Recommendation:** The Tauri desktop app is now feature-complete for all core and advanced functionality. Ready for beta testing and migration planning from Electron to Tauri.

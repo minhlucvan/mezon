@@ -7,6 +7,7 @@ use tauri::{
     Emitter, Manager, WindowEvent,
 };
 
+mod active_window;
 mod commands;
 mod screen_capture;
 mod window;
