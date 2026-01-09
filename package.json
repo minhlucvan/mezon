@@ -34,6 +34,11 @@
     "package:desktop": "nx run desktop:package",
     "make:desktop": "nx run desktop:make",
     "release:desktop": "yarn build:desktop && yarn package:desktop && yarn make:desktop",
+    "dev:tauri": "nx dev tauri",
+    "build:tauri:renderer": "cross-env BUILD_TARGET='tauri' nx build chat --prod --baseHref=./",
+    "build:tauri": "nx build tauri",
+    "build:tauri:debug": "nx build-debug tauri",
+    "release:tauri": "yarn build:tauri",
     "prepare": "husky"
   },
   "private": true,
@@ -191,6 +196,7 @@
     "ts-node": "10.9.2",
     "typescript": "5.4.3",
     "url-loader": "^4.1.1",
+    "@tauri-apps/cli": "^2.5.0",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^5.10.0"
