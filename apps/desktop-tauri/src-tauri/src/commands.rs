@@ -344,29 +344,52 @@ pub async fn copy_to_clipboard(app: tauri::AppHandle, text: String) -> Result<()
         .map_err(|e| e.to_string())
 }
 
-/// Copy image to clipboard from URL
+/// Copy image to clipboard from URL (native implementation)
 #[tauri::command]
 pub async fn copy_image_to_clipboard(
-    app: tauri::AppHandle,
+    _app: tauri::AppHandle,
     url: String,
-) -> Result<(), String> {
-    use tauri_plugin_http::reqwest;
+) -> Result<bool, String> {
+    crate::clipboard::copy_image_from_url_to_clipboard(&url).await?;
+    Ok(true)
+}
 
-    // Download image
-    let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
-    let bytes = response.bytes().await.map_err(|e| e.to_string())?;
+/// Copy image to clipboard from base64 data
+#[tauri::command]
+pub async fn copy_base64_image_to_clipboard(
+    _app: tauri::AppHandle,
+    base64_data: String,
+) -> Result<bool, String> {
+    crate::clipboard::copy_base64_image_to_clipboard(&base64_data)?;
+    Ok(true)
+}
 
-    // Check size limit (50MB)
-    if bytes.len() > 50 * 1024 * 1024 {
-        return Err("Image too large (max 50MB)".to_string());
+/// Copy image to clipboard from raw bytes
+#[tauri::command]
+pub async fn copy_image_bytes_to_clipboard(
+    _app: tauri::AppHandle,
+    image_data: Vec<u8>,
+) -> Result<bool, String> {
+    crate::clipboard::copy_image_to_clipboard(&image_data)?;
+    Ok(true)
+}
+
+/// Read image from clipboard as base64 PNG
+#[tauri::command]
+pub async fn read_image_from_clipboard(_app: tauri::AppHandle) -> Result<Option<String>, String> {
+    if !crate::clipboard::clipboard_has_image() {
+        return Ok(None);
     }
 
-    // Emit event for frontend to handle platform-specific clipboard
-    if let Some(window) = app.get_webview_window("main") {
-        let _ = window.emit("copy-image-data", base64::encode(&bytes));
-    }
+    let png_data = crate::clipboard::read_image_from_clipboard()?;
+    let base64_data = base64::encode(&png_data);
+    Ok(Some(format!("data:image/png;base64,{}", base64_data)))
+}
 
-    Ok(())
+/// Check if clipboard contains an image
+#[tauri::command]
+pub async fn clipboard_has_image(_app: tauri::AppHandle) -> Result<bool, String> {
+    Ok(crate::clipboard::clipboard_has_image())
 }
 
 /// Read text from clipboard

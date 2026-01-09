@@ -8,6 +8,7 @@ use tauri::{
 };
 
 mod active_window;
+mod clipboard;
 mod commands;
 mod screen_capture;
 mod window;
@@ -84,7 +85,11 @@ fn main() {
             // Clipboard commands
             commands::copy_to_clipboard,
             commands::copy_image_to_clipboard,
+            commands::copy_base64_image_to_clipboard,
+            commands::copy_image_bytes_to_clipboard,
             commands::read_clipboard,
+            commands::read_image_from_clipboard,
+            commands::clipboard_has_image,
             // Image commands
             commands::open_image_window,
             commands::handle_action_show_image,

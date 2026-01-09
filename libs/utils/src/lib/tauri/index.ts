@@ -90,6 +90,61 @@ export async function quitTauriApp(): Promise<void> {
 }
 
 // ============================================================================
+// Native Image Clipboard APIs (matching Electron's clipboard.writeImage)
+// ============================================================================
+
+/**
+ * Copy image to clipboard from URL
+ * Downloads the image and copies it natively to the system clipboard
+ * @param url - The URL of the image to copy
+ * @returns true if successful
+ */
+export async function copyTauriImageToClipboard(url: string): Promise<boolean> {
+	const result = await invokeTauri<boolean>('copy_image_to_clipboard', { url });
+	return result ?? false;
+}
+
+/**
+ * Copy image to clipboard from base64 data
+ * @param base64Data - Base64 encoded image data (with or without data URL prefix)
+ * @returns true if successful
+ */
+export async function copyTauriBase64ImageToClipboard(base64Data: string): Promise<boolean> {
+	const result = await invokeTauri<boolean>('copy_base64_image_to_clipboard', { base64Data });
+	return result ?? false;
+}
+
+/**
+ * Copy image to clipboard from raw bytes
+ * @param imageData - Raw image bytes (PNG, JPEG, etc.)
+ * @returns true if successful
+ */
+export async function copyTauriImageBytesToClipboard(imageData: Uint8Array): Promise<boolean> {
+	const result = await invokeTauri<boolean>('copy_image_bytes_to_clipboard', {
+		imageData: Array.from(imageData)
+	});
+	return result ?? false;
+}
+
+/**
+ * Read image from clipboard as base64 PNG data URL
+ * @returns Base64 PNG data URL or null if no image in clipboard
+ */
+export async function readTauriImageFromClipboard(): Promise<string | null> {
+	const result = await invokeTauri<string | null>('read_image_from_clipboard');
+	return result;
+}
+
+/**
+ * Check if clipboard contains an image
+ * @returns true if clipboard contains an image
+ */
+export async function tauriClipboardHasImage(): Promise<boolean> {
+	const result = await invokeTauri<boolean>('clipboard_has_image');
+	return result ?? false;
+}
+
+// ============================================================================
 // Screen Capture APIs (matching Electron's desktopCapturer)
 // ============================================================================
 
