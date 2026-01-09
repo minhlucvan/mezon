@@ -1,5 +1,5 @@
 use crate::commands::ImageWindowOptions;
-use tauri::{Manager, WebviewUrl, WebviewWindowBuilder};
+use tauri::{Emitter, Manager, WebviewUrl, WebviewWindowBuilder};
 
 /// Create an image viewer window
 pub async fn create_image_window(

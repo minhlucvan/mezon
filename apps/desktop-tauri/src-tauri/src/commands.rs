@@ -225,8 +225,8 @@ pub async fn show_notification(
     let mut notification = app.notification().builder();
     notification = notification.title(&options.title).body(&options.body);
 
-    if let Some(silent) = options.silent {
-        notification = notification.silent(silent);
+    if options.silent.unwrap_or(false) {
+        notification = notification.silent();
     }
 
     notification.show().map_err(|e| e.to_string())?;
@@ -277,7 +277,7 @@ pub async fn download_file(
         .dialog()
         .file()
         .set_file_name(&filename)
-        .save_file()
+        .blocking_save_file()
         .ok_or("Save dialog cancelled")?;
 
     // Download file
@@ -286,10 +286,18 @@ pub async fn download_file(
         .map_err(|e| e.to_string())?;
     let bytes = response.bytes().await.map_err(|e| e.to_string())?;
 
-    // Write to file
-    std::fs::write(&file_path, &bytes).map_err(|e| e.to_string())?;
+    // Convert FilePath to PathBuf
+    let path_buf = match &file_path {
+        tauri_plugin_dialog::FilePath::Path(p) => p.clone(),
+        tauri_plugin_dialog::FilePath::Url(u) => {
+            std::path::PathBuf::from(u.path())
+        }
+    };
 
-    Ok(file_path.to_string_lossy().to_string())
+    // Write to file
+    std::fs::write(&path_buf, &bytes).map_err(|e| e.to_string())?;
+
+    Ok(path_buf.to_string_lossy().to_string())
 }
 
 /// Show save file dialog
@@ -314,8 +322,13 @@ pub async fn save_file_dialog(
         }
     }
 
-    let path = dialog.save_file();
-    Ok(path.map(|p| p.to_string_lossy().to_string()))
+    let path = dialog.blocking_save_file();
+    Ok(path.map(|file_path| {
+        match file_path {
+            tauri_plugin_dialog::FilePath::Path(p) => p.to_string_lossy().to_string(),
+            tauri_plugin_dialog::FilePath::Url(u) => u.to_string(),
+        }
+    }))
 }
 
 // ============================================================================

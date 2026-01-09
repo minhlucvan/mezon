@@ -74,27 +74,16 @@
         "displayLanguageSelector": false,
         "installerIcon": "icons/icon.ico",
         "installMode": "currentUser",
-        "languages": ["English"],
-        "headerImage": null,
-        "sidebarImage": null,
-        "license": null,
-        "runAfterFinish": true,
-        "createDesktopShortcut": true,
-        "createStartMenuShortcut": true
+        "languages": ["English"]
       },
       "wix": null
     },
     "linux": {
-      "appId": "app.mezon.ai",
-      "section": "utils",
-      "priority": "optional",
-      "files": {},
       "deb": {
         "depends": [
           "libwebkit2gtk-4.1-0",
           "libayatana-appindicator3-1"
-        ],
-        "desktopTemplate": null
+        ]
       },
       "rpm": {
         "depends": []
@@ -102,12 +91,9 @@
     },
     "macOS": {
       "entitlements": "assets/entitlements.mac.plist",
-      "exceptionDomain": "",
       "frameworks": [],
       "minimumSystemVersion": "10.15",
-      "signingIdentity": "Tien Pham (E9Y2J54ZH3)",
-      "providerShortName": null,
-      "dmgLicense": null
+      "signingIdentity": "Tien Pham (E9Y2J54ZH3)"
     },
     "iOS": {
       "developmentTeam": "E9Y2J54ZH3"
