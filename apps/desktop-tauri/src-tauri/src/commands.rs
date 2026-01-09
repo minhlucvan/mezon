@@ -577,23 +577,83 @@ pub async fn check_permission_camera() -> Result<String, String> {
 // Screen Capture Commands
 // ============================================================================
 
+use crate::screen_capture;
+
+/// Response type for screen sources (matches Electron API)
 #[derive(Debug, Serialize)]
-pub struct ScreenSource {
+#[serde(rename_all = "camelCase")]
+pub struct ScreenSourcesResponse {
+    pub sources: Vec<ScreenSourceItem>,
+    pub total: usize,
+    pub has_more: bool,
+}
+
+#[derive(Debug, Serialize)]
+pub struct ScreenSourceItem {
     pub id: String,
     pub name: String,
-    pub thumbnail: Option<String>, // Base64 encoded
-    pub source_type: String,       // "screen" or "window"
+    pub thumbnail: String,
+    pub icon: String,
+}
+
+/// Response type for load more sources
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LoadMoreSourcesResponse {
+    pub sources: Vec<ScreenSourceItem>,
+    pub has_more: bool,
 }
 
 /// Get available screen sources for screen sharing
+/// Matches Electron's desktopCapturer.getSources() API
 #[tauri::command]
-pub async fn get_screen_sources(
-    _source_type: Option<String>,
-) -> Result<Vec<ScreenSource>, String> {
-    // Screen capture in Tauri requires platform-specific implementation
-    // or using WebRTC's getDisplayMedia which is handled by the browser
-    // This is a placeholder - actual implementation would need platform-specific code
-    Ok(vec![])
+pub async fn get_screen_sources(source: String) -> Result<ScreenSourcesResponse, String> {
+    let result = screen_capture::get_screen_sources(&source)?;
+
+    Ok(ScreenSourcesResponse {
+        sources: result
+            .sources
+            .into_iter()
+            .map(|s| ScreenSourceItem {
+                id: s.id,
+                name: s.name,
+                thumbnail: s.thumbnail,
+                icon: s.icon,
+            })
+            .collect(),
+        total: result.total,
+        has_more: result.has_more,
+    })
+}
+
+/// Load more screen sources with pagination
+#[tauri::command]
+pub async fn load_more_screen_sources(
+    source: String,
+    offset: usize,
+) -> Result<LoadMoreSourcesResponse, String> {
+    let result = screen_capture::load_more_screen_sources(&source, offset)?;
+
+    Ok(LoadMoreSourcesResponse {
+        sources: result
+            .sources
+            .into_iter()
+            .map(|s| ScreenSourceItem {
+                id: s.id,
+                name: s.name,
+                thumbnail: s.thumbnail,
+                icon: s.icon,
+            })
+            .collect(),
+        has_more: result.has_more,
+    })
+}
+
+/// Clear screen sources cache
+#[tauri::command]
+pub async fn clear_screen_sources_cache(source: Option<String>) -> Result<serde_json::Value, String> {
+    screen_capture::clear_screen_sources_cache(source.as_deref());
+    Ok(serde_json::json!({ "success": true }))
 }
 
 // ============================================================================

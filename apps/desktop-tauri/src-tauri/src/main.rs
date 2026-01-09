@@ -8,6 +8,7 @@ use tauri::{
 };
 
 mod commands;
+mod screen_capture;
 mod window;
 
 fn main() {
@@ -96,6 +97,8 @@ fn main() {
             commands::check_permission_camera,
             // Screen capture commands
             commands::get_screen_sources,
+            commands::load_more_screen_sources,
+            commands::clear_screen_sources_cache,
             // Activity tracking commands
             commands::update_activity_tracking,
             commands::get_active_window,

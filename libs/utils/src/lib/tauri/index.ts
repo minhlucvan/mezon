@@ -89,6 +89,59 @@ export async function quitTauriApp(): Promise<void> {
 	await invokeTauri('quit_app');
 }
 
+// ============================================================================
+// Screen Capture APIs (matching Electron's desktopCapturer)
+// ============================================================================
+
+export interface ScreenSourceItem {
+	id: string;
+	name: string;
+	thumbnail: string;
+	icon: string;
+}
+
+export interface ScreenSourcesResponse {
+	sources: ScreenSourceItem[];
+	total: number;
+	hasMore: boolean;
+}
+
+export interface LoadMoreSourcesResponse {
+	sources: ScreenSourceItem[];
+	hasMore: boolean;
+}
+
+/**
+ * Get screen sources for screen sharing (screens or windows)
+ * Matches Electron's desktopCapturer.getSources() API
+ */
+export async function getTauriScreenSources(source: 'screen' | 'window'): Promise<ScreenSourcesResponse> {
+	const result = await invokeTauri<ScreenSourcesResponse>('get_screen_sources', { source });
+	return result || { sources: [], total: 0, hasMore: false };
+}
+
+/**
+ * Load more screen sources with pagination
+ */
+export async function loadMoreTauriScreenSources(
+	source: 'screen' | 'window',
+	offset: number
+): Promise<LoadMoreSourcesResponse> {
+	const result = await invokeTauri<LoadMoreSourcesResponse>('load_more_screen_sources', {
+		source,
+		offset
+	});
+	return result || { sources: [], hasMore: false };
+}
+
+/**
+ * Clear the screen sources cache
+ */
+export async function clearTauriScreenSourcesCache(source?: 'screen' | 'window'): Promise<{ success: boolean }> {
+	const result = await invokeTauri<{ success: boolean }>('clear_screen_sources_cache', { source });
+	return result || { success: false };
+}
+
 // TypeScript declarations for Tauri globals
 declare global {
 	interface Window {
