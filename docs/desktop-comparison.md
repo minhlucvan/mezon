@@ -141,7 +141,7 @@ Binary: 15MB (release, stripped, LTO optimized)
 | HTTP requests | ✅ | ✅ | Full parity |
 | WebSocket | ✅ | ✅ | Via WebView |
 | **Media** | | | |
-| Screen capture sources | ✅ | ❌ | Electron has desktopCapturer |
+| Screen capture sources | ✅ | ✅ | Full parity (platform-specific impl) |
 | WebRTC | ✅ | ✅ | Via WebView |
 | Camera/Mic permissions | ✅ | ⚠️ | Partial (system-level) |
 | **Updates** | | | |
@@ -165,20 +165,27 @@ Binary: 15MB (release, stripped, LTO optimized)
 
 ## 4. Feature Gaps in Tauri
 
-### Critical Gaps
+### Remaining Gaps
 
 | Feature | Impact | Workaround |
 |---------|--------|------------|
-| **Screen capture (desktopCapturer)** | High | Use WebRTC getDisplayMedia (browser API) |
 | **Active window detection** | Medium | Need Rust crate or native implementation |
 | **Native image clipboard** | Low | Base64 encode and handle in frontend |
 
-### Implementation Notes
+### Recently Implemented
 
-**Screen Capture:**
-Electron's `desktopCapturer` provides thumbnails and window lists. Tauri requires:
-- WebRTC's `getDisplayMedia()` for actual capture
-- Platform-specific implementation for source listing
+| Feature | Status |
+|---------|--------|
+| **Screen capture (desktopCapturer)** | ✅ Implemented via platform-specific Rust code |
+
+The screen capture implementation provides:
+- Windows: GDI/Win32 APIs (BitBlt, GetDIBits)
+- macOS: Core Graphics (CGWindowListCopyWindowInfo)
+- Linux: X11rb for X11 window enumeration
+- Thumbnail generation with proper sizing (272x136 screens, 150x90 windows)
+- Caching and pagination matching Electron API
+
+### Implementation Notes
 
 **Active Window Detection:**
 Electron uses `mezon-active-windows` native module. Tauri needs:
@@ -267,13 +274,14 @@ The Tauri version provides:
 - ✅ Clipboard operations
 - ✅ Global shortcuts
 
-### NOT YET - For these features
+### Minor Gaps Remaining
 
 | Missing Feature | Priority | Effort to Implement |
 |-----------------|----------|---------------------|
-| Screen source thumbnails | High | Medium (Rust crate) |
 | Active window tracking | Medium | Medium (Platform APIs) |
 | Native image clipboard | Low | Low (already partially done) |
+
+**Note:** Screen capture is now fully implemented with platform-specific Rust code.
 
 ---
 
@@ -328,9 +336,11 @@ Plugins: 16 official plugins
 - Faster startup
 - Better security model
 
-**Remaining work** for full feature parity:
-1. Screen capture source enumeration
-2. Active window detection
-3. Minor clipboard improvements
+**Recently completed:**
+- ✅ Screen capture source enumeration (full platform support)
 
-**Recommendation:** Continue development of desktop-tauri, implement remaining features, and plan gradual migration from Electron to Tauri over the next release cycles.
+**Remaining work** for full feature parity:
+1. Active window detection (medium priority)
+2. Minor clipboard improvements (low priority)
+
+**Recommendation:** The Tauri desktop app is now feature-complete for core functionality. Consider starting beta testing and planning migration from Electron to Tauri.
