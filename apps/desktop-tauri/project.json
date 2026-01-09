@@ -1,13 +1,13 @@
 {
-  "name": "tauri",
+  "name": "desktop-tauri",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/tauri/src-tauri",
+  "sourceRoot": "apps/desktop-tauri/src-tauri",
   "projectType": "application",
   "targets": {
     "dev": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/tauri/src-tauri && cargo tauri dev",
+        "command": "cd apps/desktop-tauri/src-tauri && cargo tauri dev",
         "cwd": "."
       },
       "dependsOn": []
@@ -15,7 +15,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/tauri/src-tauri && cargo tauri build",
+        "command": "cd apps/desktop-tauri/src-tauri && cargo tauri build",
         "cwd": "."
       },
       "dependsOn": ["build-renderer"]
@@ -30,7 +30,7 @@
     "build-debug": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/tauri/src-tauri && cargo tauri build --debug",
+        "command": "cd apps/desktop-tauri/src-tauri && cargo tauri build --debug",
         "cwd": "."
       },
       "dependsOn": ["build-renderer"]
@@ -38,21 +38,21 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/tauri/src-tauri && cargo clippy",
+        "command": "cd apps/desktop-tauri/src-tauri && cargo clippy",
         "cwd": "."
       }
     },
     "check": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/tauri/src-tauri && cargo check",
+        "command": "cd apps/desktop-tauri/src-tauri && cargo check",
         "cwd": "."
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd apps/tauri/src-tauri && cargo clean",
+        "command": "cd apps/desktop-tauri/src-tauri && cargo clean",
         "cwd": "."
       }
     }

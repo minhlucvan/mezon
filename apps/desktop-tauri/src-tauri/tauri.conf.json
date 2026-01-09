@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": "yarn dev:chat",
     "devUrl": "http://localhost:4200",
-    "beforeBuildCommand": "yarn build:tauri:renderer",
+    "beforeBuildCommand": "yarn build:desktop-tauri:renderer",
     "frontendDist": "../../../dist/apps/chat"
   },
   "app": {
@@ -16,24 +16,32 @@
         "title": "Mezon",
         "label": "main",
         "width": 1280,
-        "height": 800,
-        "minWidth": 940,
+        "height": 720,
+        "minWidth": 950,
         "minHeight": 500,
         "resizable": true,
         "fullscreen": false,
         "center": true,
-        "decorations": true,
+        "decorations": false,
         "transparent": false,
-        "visible": true
+        "visible": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "acceptFirstMouse": true,
+        "tabbingIdentifier": "mezon"
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "dangerousDisableAssetCspModification": true
     },
     "trayIcon": {
       "iconPath": "icons/icon.png",
-      "iconAsTemplate": true
-    }
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false,
+      "title": "Mezon"
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,
@@ -47,23 +55,32 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "longDescription": "Mezon - Live, Work, and Play platform. A modern communication app for teams and communities.",
+    "longDescription": "Mezon - Live, Work, and Play platform. A modern communication app for teams and communities with real-time messaging, voice, and video.",
     "shortDescription": "Mezon Desktop Application",
     "targets": "all",
     "publisher": "Mezon App",
-    "licenseFile": "../../../LICENSE",
-    "resources": [],
+    "resources": [
+      "assets/**/*"
+    ],
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
       "timestampUrl": "",
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper",
+        "silent": true
+      },
       "nsis": {
         "displayLanguageSelector": false,
         "installerIcon": "icons/icon.ico",
         "installMode": "currentUser",
         "languages": ["English"],
         "headerImage": null,
-        "sidebarImage": null
+        "sidebarImage": null,
+        "license": null,
+        "runAfterFinish": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true
       },
       "wix": null
     },
@@ -73,19 +90,27 @@
       "priority": "optional",
       "files": {},
       "deb": {
-        "depends": []
+        "depends": [
+          "libwebkit2gtk-4.1-0",
+          "libayatana-appindicator3-1"
+        ],
+        "desktopTemplate": null
       },
       "rpm": {
         "depends": []
       }
     },
     "macOS": {
-      "entitlements": null,
+      "entitlements": "assets/entitlements.mac.plist",
       "exceptionDomain": "",
       "frameworks": [],
       "minimumSystemVersion": "10.15",
       "signingIdentity": null,
-      "providerShortName": null
+      "providerShortName": null,
+      "dmgLicense": null
+    },
+    "iOS": {
+      "developmentTeam": null
     }
   },
   "plugins": {
