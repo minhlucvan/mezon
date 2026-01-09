@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Mezon",
+  "productName": "mezon",
   "version": "1.4.61",
   "identifier": "app.mezon.ai",
   "build": {
@@ -105,12 +105,12 @@
       "exceptionDomain": "",
       "frameworks": [],
       "minimumSystemVersion": "10.15",
-      "signingIdentity": null,
+      "signingIdentity": "Tien Pham (E9Y2J54ZH3)",
       "providerShortName": null,
       "dmgLicense": null
     },
     "iOS": {
-      "developmentTeam": null
+      "developmentTeam": "E9Y2J54ZH3"
     }
   },
   "plugins": {

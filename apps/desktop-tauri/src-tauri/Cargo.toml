@@ -1,5 +1,5 @@
 [package]
-name = "mezon-desktop-tauri"
+name = "mezon"
 version = "1.4.61"
 description = "Mezon Desktop Application powered by Tauri"
 authors = ["Mezon App <hello@mezon.vn>"]
