@@ -1,0 +1,18 @@
+# Rust/Cargo
+src-tauri/target/
+
+# Tauri build artifacts
+src-tauri/gen/
+src-tauri/Cargo.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

@@ -1,0 +1,60 @@
+{
+  "name": "desktop-tauri",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/desktop-tauri/src-tauri",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/desktop-tauri/src-tauri && cargo tauri dev",
+        "cwd": "."
+      },
+      "dependsOn": []
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/desktop-tauri/src-tauri && cargo tauri build",
+        "cwd": "."
+      },
+      "dependsOn": ["build-renderer"]
+    },
+    "build-renderer": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cross-env BUILD_TARGET='tauri' nx build chat --prod --baseHref=./",
+        "cwd": "."
+      }
+    },
+    "build-debug": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/desktop-tauri/src-tauri && cargo tauri build --debug",
+        "cwd": "."
+      },
+      "dependsOn": ["build-renderer"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/desktop-tauri/src-tauri && cargo clippy",
+        "cwd": "."
+      }
+    },
+    "check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/desktop-tauri/src-tauri && cargo check",
+        "cwd": "."
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/desktop-tauri/src-tauri && cargo clean",
+        "cwd": "."
+      }
+    }
+  }
+}

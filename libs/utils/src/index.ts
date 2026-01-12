@@ -1,5 +1,6 @@
 export * from './lib/async';
 export * from './lib/bridge';
+export * from './lib/tauri';
 export * from './lib/clan';
 export * from './lib/constant';
 export * from './lib/constants/quickMenu';
